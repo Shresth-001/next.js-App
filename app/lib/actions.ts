@@ -1,6 +1,6 @@
 'use server';
 
-import {z} from 'zod'
+import {custom, z} from 'zod'
 import postgres from 'postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -37,4 +37,20 @@ export  async function createInvoice(formData:FormData) {
     // };
     // console.log(rawFormData);
     // console.log(typeof rawFormData.amount);
+}
+const UpdateInvoice=formSchema.omit({id:true,date:true});
+export async function updateInvoice(id:string,formData:FormData) {
+    const {customerId,amount,status}=UpdateInvoice.parse({
+        customerId:formData.get('customerId'),
+        amount:formData.get('amount'),
+        status:formData.get('status'),
+    });
+    const amountInCent=amount*100;
+
+    await sql`
+    UPDATE invoices
+    SET customer_id=${customerId},amount=${amountInCent},status=${status}
+    WHERE id=${id}`;
+    revalidatePath('/dashboard/invoices');
+    redirect('/dashboard/invoices');
 }
