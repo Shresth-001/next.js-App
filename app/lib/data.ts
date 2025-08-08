@@ -1,3 +1,4 @@
+
 import postgres from 'postgres';
 import {
   CustomerField,
@@ -17,7 +18,7 @@ export async function fetchRevenue() {
     // Don't do this in production :)
 
     // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
+    // await new Promise((resolve) => setTimeout(resolve, 8000));
 
     const data = await sql<Revenue[]>`SELECT * FROM revenue`;
 
@@ -159,7 +160,7 @@ export async function fetchInvoiceById(id: string) {
       // Convert amount from cents to dollars
       amount: invoice.amount / 100,
     }));
-
+    console.log(invoice);
     return invoice[0];
   } catch (error) {
     console.error('Database Error:', error);
